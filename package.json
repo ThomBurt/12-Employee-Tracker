@@ -1,0 +1,28 @@
+{
+  "name": "12---employee-tracker",
+  "version": "1.0.0",
+  "description": "An app that tracks employees",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThomBurt/12---Employee-Tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThomBurt/12---Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/ThomBurt/12---Employee-Tracker#readme",
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "console.table": "^0.10.0",
+    "figlet": "^1.5.2",
+    "inquirer": "^8.2.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3"
+  }
+}
