@@ -26,64 +26,91 @@ function start(){
     console.log('=======================================================================================')
     console.log('')
 
+    initialQuestions();
+};
 
-    // start of inquirer
-    inquirer
-    .prompt ([
-      {
-        type: "list", 
-        message: "What would you like to do?",
-        name: "start",
-        choices: [
-        "Add Employee", 
-        "View all Employees", 
-        "Remove Employee",
-        "Add Department", 
-        "View all Departments",
-        "Add Roles", 
-        "View all Roles", 
-        "Update Employee Role", 
-      ]
-      }
-    ])
-    .then (function(res){
-      switch (res.start){
-  
-        case "Add Employee":
-        addEmployee();
-        break;
-       
-        case "View all Employees":
-        viewAllEmployees();
-        break; 
-  
-        case "Remove Employee": 
-        removeEmployee(); 
-        break;
-      
-        case "Add Department": 
-        addDept(); 
-        break;
-  
-        case "View all Departments":
-        viewAllDept();
-        break;
-  
-        case "Add Roles": 
-        addRole(); 
-        break;
-  
-        case "View all Roles": 
-        viewAllRoles(); 
-        break;
-      
-        case "Update Employee Role":
-        updateEmployeeRole(); 
-        break;
-  
-        case "Exit":
-        connection.end(); 
-        break; 
-      }
-    })
-  }
+function initialQuestions() {
+        // start of inquirer
+        inquirer
+        .prompt({
+          name: "action",
+          type: "rawlist",
+          message: "What would you like to do?",
+          choices: [
+            "Add a department",
+            "Add an employee",
+            "Add a role",
+            "View a department",
+            "View employees",
+            "View a role",
+            "Update employee roles",
+            "Update employee managers",
+            "View employees by manager",
+            "Delete department",
+            "Delete role",
+            "Delete employee",
+            "View the total utilized budget of a department",
+            "Exit",
+          ],
+        })
+        .then((answer) => {
+          switch (answer.action) {
+            case "Add a department":
+              addDepartment();
+              break;
+    
+            case "Add an employee":
+              addEmployee();
+              break;
+    
+            case "Add a role":
+              addRole();
+              break;
+    
+            case "View a department":
+              viewDepartments();
+              break;
+    
+            case "View employees":
+              viewEmployees();
+              break;
+    
+            case "View a role":
+              viewRoles();
+              break;
+    
+            case "View employees by manager":
+              viewEmpByManager();
+              break;
+    
+            case "Update employee roles":
+              updateEmpRole();
+              break;
+    
+            case "Update employee managers":
+              updateEmpManagers();
+              break;
+    
+            case "Delete department":
+              deleteDepartment();
+              break;
+    
+            case "Delete role":
+              deleteRole();
+              break;
+    
+            case "Delete employee":
+              deleteEmployee();
+              break;
+    
+            // Bonus
+            case "View the total utilized budget of a department":
+              companyBudget();
+              break;
+    
+            default:
+              console.log(`Invalid action: ${answer.action}`);
+              break;
+          }
+        });
+}
