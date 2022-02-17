@@ -55,27 +55,27 @@ function start() {
         .then((answer) => {
           switch (answer.action) {
             case "Add a department":
-              addDepartment();
+              addDepartment(); //✔️
               break;
     
             case "Add an employee":
-              addEmployee();
+              addEmployee(); //✔️
               break;
     
             case "Add a role":
-              addRole();
+              addRole(); //✔️
               break;
     
             case "View a department":
-              viewDepartments();
+              viewDepartments();   //✔️
               break;
     
             case "View employees":
-              viewEmployees();
+              viewEmployees();   //✔️
               break;
     
             case "View a role":
-              viewRoles();
+              viewRoles();   //✔️
               break;
     
             case "View employees by manager":
@@ -83,15 +83,15 @@ function start() {
               break;
     
             case "Update employee roles":
-              updateEmpRole();
+              updateEmployeeRole();
               break;
     
             case "Update employee managers":
-              updateEmpManagers();
+              updateEmployeeManagers();
               break;
     
             case "Delete department":
-              deleteDepartment();
+              deleteDepartment();  //✔️
               break;
     
             case "Delete role":
@@ -99,7 +99,7 @@ function start() {
               break;
     
             case "Delete employee":
-              deleteEmployee();
+              deleteEmployee();   //✔️
               break;
     
             case "View the total utilized budget of a department":
@@ -111,11 +111,15 @@ function start() {
               break;
 
             case "Exit":
-              connection.end(); 
+              connection.end();    //✔️
               break; 
           }
         });
-}
+};
+
+
+// DEPARTMENT FUNCTIONS
+
 
 const addDepartment = () => {
   // show the current Departments in the database
@@ -153,12 +157,47 @@ function viewDepartments(){
     console.table(res);
     start();
   })
-  }
+};
+
+function deleteDepartment(){
+  let departmentList = [];
+  connection.query(
+    "SELECT departments.name FROM departments", (err,res) => {
+      for (let i = 0; i < res.length; i++){
+        departmentList.push(res[i].name);
+      }
+  inquirer 
+  .prompt ([ 
+    {
+      type: "list", 
+      message: "Which department would you like to delete?",
+      name: "department",
+      choices: departmentList
+
+    },
+  ])
+  .then (function(res){
+    const query = connection.query(
+      `DELETE FROM departments WHERE(name) = '${res.department}'`,
+        function(err, res) {
+        if (err) throw err;
+        console.log( "Department deleted!\n");
+     start();
+    });
+    });
+    }
+  );
+};
   
 
+
+
+
+// EMPLOYEE FUNCTIONS
+
 function addEmployee() {
-    console.log("Adding a new employee");
-    managerChoices = connection.query("SELECT managers.first_name, managers.last_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.manager_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id")
+  console.log("Adding a new employee");
+  managerChoices = connection.query("SELECT managers.first_name, managers.last_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.manager_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id")
     inquirer 
       .prompt ([ 
         {
@@ -195,12 +234,12 @@ function addEmployee() {
     
             start(); 
           }
-        );    
-      })
-    }
+       );    
+  })
+};
 
     // function to view all employees
-    function viewEmployees() {
+function viewEmployees() {
       connection.query("SELECT employees.first_name, employees.last_name, roles.title AS \"role\", managers.first_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id",  
       function(err, res) {
         if (err) throw err;
@@ -208,10 +247,10 @@ function addEmployee() {
         console.table(res);
         start();
       });
-    }
+}
 
     // REMOVE EMPLOYEE FUNCTION
-    function removeEmployee(){
+function deleteEmployee(){
       let employeeList = [];
       connection.query(
         "SELECT employees.first_name, employees.last_name FROM employees", (err,res) => {
@@ -238,11 +277,48 @@ function addEmployee() {
         });
         });
         }
-          );
-          };
+      );
+};
+
+function updateEmployeeRole(){
+  connection.query("SELECT first_name, last_name, id FROM employees",
+  function(err,res){
+    for (let i=0; i <res.length; i++){
+      employees.push(res[i].first_name + " " + res[i].last_name);
+    }
+    let employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}))
+    inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employeeName",
+        message: "Which employee's role would you like to update?",
+        choices: employees
+      },
+      {
+        type: "input",
+        name: "role",
+        message: "What is your new role?"
+      }
+    ])
+    .then(function(res) {
+      connection.query(`UPDATE employees SET role_id = ${res.role} WHERE id = ${res.employeeName}`,
+      function(err, res) {
+        console.log(res);
+        start()
+        }
+        );
+      })
+  }
+  )
+};
 
 
-          function addRole() {
+
+// ROLE FUNCTIONS
+
+
+function addRole() {
           let departments= []; 
           connection.query("SELECT * FROM departments",
           function(err,res){
@@ -281,54 +357,25 @@ function addEmployee() {
               }, 
               function (err, res){
                 if (err) throw err;
-                //const id = res.insertId;
                 start(); 
               }
             )
           })
-          })
-          }
+       })
+};
           
-          // function viewAllRoles(){
-          //   connection.query("SELECT roles.*, departments.name FROM roles LEFT JOIN departments ON departments.id = roles.department_id", function (err,res){
-          //     if (err) throw err;
-          //     console.table(res);
-          //     start();
-          //   }
-          //   )
-          //   }
+function viewRoles(){
+            connection.query("SELECT roles.*, departments.name FROM roles LEFT JOIN departments ON departments.id = roles.department_id", function (err,res){
+              if (err) throw err;
+              console.table(res);
+              start();
+            }
+            )
+};
           
-          // function updateEmployeeRole(){
-          // connection.query("SELECT first_name, last_name, id FROM employees",
-          // function(err,res){
-          //   // for (let i=0; i <res.length; i++){
-          //   //   employees.push(res[i].first_name + " " + res[i].last_name);
-          //   // }
-          //   let employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}))
-          //   inquirer
-          //   .prompt([
-          //     {
-          //       type: "list",
-          //       name: "employeeName",
-          //       message: "Which employee's role would you like to update?", 
-          //       choices: employees
-          //     },
-          //     {
-          //       type: "input",
-          //       name: "role",
-          //       message: "What is your new role?"
-          //     }
-          //   ])
-          //   .then (function(res){
-          //     connection.query(`UPDATE employees SET role_id = ${res.role} WHERE id = ${res.employeeName}`,
-          //     function (err, res){
-          //       console.log(res);
-          //       //updateRole(res);
-          //       start()
-          //     }
-          //     );
-          //   })
-          // }
-          // )
-          // }
+
+
+
+
+
           

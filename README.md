@@ -34,5 +34,5 @@ THEN I am prompted to select an employee to update and their new role and this i
 Update employee managers.<br>
 View employees by manager.<br>
 View employees by department.<br>
-Delete departments, roles, and employees.<br>
+Delete departments, roles, and employees.<br> ✔️
 View the total utilized budget of a department—in other words, the combined salaries of all employees in that department.<br>
