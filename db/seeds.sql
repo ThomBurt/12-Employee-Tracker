@@ -20,22 +20,22 @@ VALUES
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id) 
 VALUES
-('Jake', 'Peralta', 2, 1),
-('Rosa', 'Diaz', 2, 1),
-('Amy', 'Santiago', 2, 1),
+('Jake', 'Peralta', 2, 4),
+('Rosa', 'Diaz', 2, 4),
+('Amy', 'Santiago', 2, 4),
 ('Ray', 'Holt', 1, 1),
-('Gina', 'Linetti', 6, 1),
-('Charles', 'Boyle', 4, 1),
-('Terry', 'Jeffords', 5, 1),
-('Winston', 'Schmidt', 2, 1),
-('Jessica', 'Day', 2, 1),
-('Nick', 'Miller', 2, 1),
-('Winston', 'Bishop', 1, 1),
-('Rachel', 'Green', 2, 1),
-('Monica', 'Geller', 3, 1),
-('Phoebe', 'Buffay', 4, 1),
-('Chandler', 'Bing', 5, 1),
-('Ross', 'Geller', 6, 1),
-('Joey', 'Tribbiani', 7, 1);
+('Gina', 'Linetti', 6, 4),
+('Charles', 'Boyle', 4, 4),
+('Terry', 'Jeffords', 5, 4),
+('Winston', 'Schmidt', 2, 4),
+('Jessica', 'Day', 2, 4),
+('Nick', 'Miller', 2, 4),
+('Winston', 'Bishop', 4, 4),
+('Rachel', 'Green', 2, 4),
+('Monica', 'Geller', 3, 4),
+('Phoebe', 'Buffay', 4, 4),
+('Chandler', 'Bing', 5, 4),
+('Ross', 'Geller', 6, 4),
+('Joey', 'Tribbiani', 7, 4);
 
 UPDATE `employees_db`.`employees` SET `manager_id` = '1' WHERE (`id` > '1');

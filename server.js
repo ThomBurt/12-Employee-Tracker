@@ -158,6 +158,7 @@ function viewDepartments(){
 
 function addEmployee() {
     console.log("Adding a new employee");
+    managerChoices = connection.query("SELECT managers.first_name, managers.last_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.manager_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id")
     inquirer 
       .prompt ([ 
         {
@@ -199,7 +200,7 @@ function addEmployee() {
     }
 
     // function to view all employees
-    function viewAllEmployees() {
+    function viewEmployees() {
       connection.query("SELECT employees.first_name, employees.last_name, roles.title AS \"role\", managers.first_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id",  
       function(err, res) {
         if (err) throw err;
