@@ -95,7 +95,7 @@ function start() {
               break;
     
             case "Delete role":
-              deleteRole();
+              deleteRole();       //✔️
               break;
     
             case "Delete employee":
@@ -107,7 +107,7 @@ function start() {
               break;
     
             default:
-              console.log(`Invalid action: ${answer.action}`);
+              console.log(`Action not accepted: ${answer.action}`);
               break;
 
             case "Exit":
@@ -117,9 +117,9 @@ function start() {
         });
 };
 
+// -------------------------------------------------------------------------------------------------------------------------
 
 // DEPARTMENT FUNCTIONS
-
 
 const addDepartment = () => {
   // show the current Departments in the database
@@ -190,7 +190,7 @@ function deleteDepartment(){
 };
   
 
-
+// -------------------------------------------------------------------------------------------------------------------------
 
 
 // EMPLOYEE FUNCTIONS
@@ -315,6 +315,8 @@ function updateEmployeeRole(){
 
 
 
+// -------------------------------------------------------------------------------------------------------------------------
+
 // ROLE FUNCTIONS
 
 
@@ -373,9 +375,35 @@ function viewRoles(){
             )
 };
           
+function deleteRole(){
+  let roleList = [];
+  connection.query(
+    "SELECT roles.title FROM roles", (err,res) => {
+      for (let i = 0; i < res.length; i++){
+        roleList.push(res[i].title);
+      }
+  inquirer 
+  .prompt ([ 
+    {
+      type: "list", 
+      message: "Which role would you like to delete?",
+      name: "role",
+      choices: roleList
 
-
-
+    },
+  ])
+  .then (function(res){
+    const query = connection.query(
+      `DELETE FROM roles WHERE concat(title) = '${res.role}'`,
+        function(err, res) {
+        if (err) throw err;
+        console.log( "Role deleted!\n");
+     start();
+    });
+    });
+    }
+  );
+};
 
 
           

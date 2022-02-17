@@ -40,7 +40,7 @@ CREATE TABLE roles (
   INDEX `idx_department_id`(department_id),
   CONSTRAINT `fk_department_id`
   FOREIGN KEY (department_id)
-  REFERENCES department(did) ON UPDATE CASCADE ON DELETE RESTRICT
+  REFERENCES department(id) ON UPDATE CASCADE ON DELETE RESTRICT
   );
 
 CREATE TABLE departments (
