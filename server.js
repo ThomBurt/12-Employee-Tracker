@@ -103,7 +103,6 @@ function initialQuestions() {
               deleteEmployee();
               break;
     
-            // Bonus
             case "View the total utilized budget of a department":
               companyBudget();
               break;
@@ -114,3 +113,53 @@ function initialQuestions() {
           }
         });
 }
+
+function addDepartment() {
+    console.log('Adding a department');
+    inquirer
+    .prompt ([
+        
+    ])
+}
+
+function addEmployee() {
+    console.log("Adding a new employee");
+    inquirer 
+      .prompt ([ 
+        {
+          type: "input", 
+          message: "What is the employee's first name?",
+          name: "first_name",
+        },
+        {
+          type: "input", 
+          message: "What is the employee's last name?",
+          name: "last_name"
+        },
+        {
+          type: "list",
+          message: "What is the employee's role?",
+          name: "role_id", 
+          choices: [1,2,3]
+        },
+        {
+          type: "input", 
+          message: "Who is their direct manager?",
+          name: "manager_id",
+          choices: managerChoices
+          // he loaded it with some kind of .map to scan through 
+        }
+      ])
+      .then (function(res){
+        const query = db.query(
+          "INSERT INTO employees SET ?", 
+         res,
+          function(err, res) {
+            if (err) throw err;
+            console.log( "Employee added!");
+    
+            initialQuestions (); 
+          }
+        );    
+      })
+    }

@@ -1,22 +1,15 @@
 # Employee Tracker
 A command-line application for managing a company's employees using node, inquirer, and MySQL.
+# USER STORY
+AS A business owner
+I WANT to be able to view and manage the departments, roles, and employees in my company
+SO THAT I can organize and plan my business
 
 # Dependencies
 - Figlet = create nice title in the console
 - inquirer = for the command question/answer
 - SQL = mysql for the database
 - console.table
-
-npm i -y
-npm install inquirer
-npm install mysql
-npm install console.table --save
-npm i figlet
-
-# USER STORY
-AS A business owner
-I WANT to be able to view and manage the departments, roles, and employees in my company
-SO THAT I can organize and plan my business
 
 # ACCEPTANCE CRITERIA
 GIVEN a command-line application that accepts user input
@@ -36,3 +29,10 @@ WHEN I choose to add an employee
 THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+
+# Bonus
+Update employee managers.
+View employees by manager.
+View employees by department.
+Delete departments, roles, and employees.
+View the total utilized budget of a department—in other words, the combined salaries of all employees in that department.
