@@ -12,8 +12,8 @@ SO THAT I can organize and plan my business
 - console.table
 
 # ACCEPTANCE CRITERIA
-GIVEN a command-line application that accepts user input
-WHEN I start the application
+GIVEN a command-line application that accepts user input <br>
+WHEN I start the application <br>
 THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
 WHEN I choose to view all departments
 THEN I am presented with a formatted table showing department names and department ids
