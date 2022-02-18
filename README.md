@@ -10,6 +10,7 @@ SO THAT I can organize and plan my business
 - inquirer = for the command question/answer
 - SQL = mysql for the database
 - console.table
+- validator
 
 # ACCEPTANCE CRITERIA
 GIVEN a command-line application that accepts user input <br>  ✔️

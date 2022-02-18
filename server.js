@@ -2,7 +2,7 @@ const connection = require('./db/connection');
 const consoleTable = require('console.table');
 const inquirer = require ('inquirer'); 
 const figlet = require("figlet");
-//const promisemysql = require("promise-mysql");
+const validate = require('./js/validate');
 
 
 // Start server after DB connection
@@ -91,9 +91,9 @@ function start() {
               updateEmployeeRole();   //✔️ 
               break;
     
-            // case "Update employee managers":
-            //   updateEmployeeManagers();  //TODO update employee manager
-            //   break;
+            case "Update employee managers":
+              updateEmployeeManager();  //✔️
+              break;
     
             case "Delete department":
               deleteDepartment();  //✔️
@@ -200,7 +200,7 @@ function deleteDepartment(){
 
 // EMPLOYEE FUNCTIONS
 
-const addEmployee = () => {
+function addEmployee() {
   inquirer.prompt([
     {
       type: 'input',
@@ -317,87 +317,53 @@ function deleteEmployee(){
       );
 };
 
-// function updateEmployeeRole(){
-//   connection.query("SELECT first_name, last_name, id FROM employees",
-//   function(err,res){
-//     let employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}))
-//     for (let i=0; i <res.length; i++){
-//       employees.push(res[i].first_name + " " + res[i].last_name);
-//     }
-//     connection.query("SELECT ")
-//     inquirer
-//     .prompt([
-//       {
-//         type: "list",
-//         name: "employeeName",
-//         message: "Which employee's role would you like to update?",
-//         choices: employees
-//       },
-//       {
-//         type: "list",
-//         name: "role",
-//         message: "What is your new role?",
-//         choices: ""
-//       }
+function updateEmployeeRole(){
+  connection.query("SELECT first_name, last_name, id FROM employees",
+  function(err,res){
+    let employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}))
+    for (let i=0; i <res.length; i++){
+      employees.push(res[i].first_name + " " + res[i].last_name);
+    }
+    connection.query("SELECT ")
+    inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employeeName",
+        message: "Which employee's role would you like to update?",
+        choices: employees
+      },
+      {
+        type: "list",
+        name: "role",
+        message: "What is your new role?",
+        choices: ""
+      }
       
-//     ])
-//     .then(function(res) {
-//       connection.query(`UPDATE employees SET role_id = ${res.role} WHERE id = ${res.employeeName}`,
-//       function(err, res) {
-//         console.log(res);
-//         start()
-//         }
-//         );
-//       })
-//   }
-//   )
-// };
-
-
-// BONUS
-// function updateEmployeeManagers(){
-//   connection.query("SELECT first_name, last_name, id FROM employees",
-//   function(err,res){
-//     let employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}))
-//     for (let i=0; i <res.length; i++){
-//       employees.push(res[i].first_name + " " + res[i].last_name);
-//     }
-//     inquirer
-//     .prompt([
-//       {
-//         type: "list",
-//         name: "employeeName",
-//         message: "Which employee would you like to update?",
-//         choices: employees
-//       },
-//       {
-//         type: "input",
-//         name: "role",
-//         message: "Who is your new manager?",
-//         choices: employees
-//       }
-//     ])
-//     .then(function(res) {
-//       connection.query(`UPDATE employees SET manager_id = ${res.role} WHERE id = ${res.employeeName}`,
-//       function(err, res) {
-//         console.log(res);
-//         start()
-//         }
-//         );
-//       })
-//   }
-//   )
-// };
-
-
-function viewEmpByManager() {
-  connection.query(`SELECT first_name, last_name, manager.first_name FROM employees INNER JOIN roles ON role_id = roles.id INNER JOIN departments ON department_id = departments.id ORDER BY employees.manager_id`,
-  function(err, res) {
-    if (err) throw err;
-    console.table(res);
-    start();
-  });
+    ])
+    .then(function(res) {
+      connection.query(`UPDATE employees SET role_id = ${res.role} WHERE id = ${res.employeeName}`,
+      function(err, res) {
+        console.log(res);
+        start()
+        }
+        );
+      })
+  }
+  )
 };
+
+
+
+
+// function viewEmpByManager() {
+//   connection.query(`SELECT first_name, last_name, managers.first_name FROM employees INNER JOIN roles ON role_id = roles.id INNER JOIN departments ON department_id = departments.id ORDER BY employees.manager_id`,
+//   function(err, res) {
+//     if (err) throw err;
+//     console.table(res);
+//     start();
+//   });
+// };
 
 
 
@@ -410,7 +376,67 @@ function viewEmployeesByDepartment() {
   });
 };
 
+// Update an Employee's Manager
+function updateEmployeeManager() {
+  let sql =       `SELECT employees.id, employees.first_name, employees.last_name, employees.manager_id
+                  FROM employees`;
+   connection.query(sql, (error, response) => {
+    let employeeNamesArray = [];
+    response.forEach((employee) => {employeeNamesArray.push(`${employee.first_name} ${employee.last_name}`);});
 
+    inquirer
+      .prompt([
+        {
+          name: 'chosenEmployee',
+          type: 'list',
+          message: 'Which employee has a new manager?',
+          choices: employeeNamesArray
+        },
+        {
+          name: 'newManager',
+          type: 'list',
+          message: 'Who is their manager?',
+          choices: employeeNamesArray
+        }
+      ])
+      .then((answer) => {
+        let employeeId, managerId;
+        response.forEach((employee) => {
+          if (
+            answer.chosenEmployee === `${employee.first_name} ${employee.last_name}`
+          ) {
+            employeeId = employee.id;
+          }
+
+          if (
+            answer.newManager === `${employee.first_name} ${employee.last_name}`
+          ) {
+            managerId = employee.id;
+          }
+        });
+
+        if (validate.isSame(answer.chosenEmployee, answer.newManager)) {
+
+          console.log('Invalid Manager Selection');
+  
+          start();
+        } else {
+          let sql = `UPDATE employees SET employees.manager_id = ? WHERE employees.id = ?`;
+
+          connection.query(
+            sql,
+            [managerId, employeeId],
+            (error) => {
+              if (error) throw error;
+
+              console.log('Employee Manager Updated');
+              start();
+            }
+          );
+        }
+      });
+  });
+};
 
 // -------------------------------------------------------------------------------------------------------------------------
 
