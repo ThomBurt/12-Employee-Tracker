@@ -11,7 +11,7 @@ connection.connect(function(err) {
     openingArt(); 
   });
 
-
+// -------------------------------------------------------------------------------------------------------------------------
 
 function openingArt(){
     // Figlet opening message

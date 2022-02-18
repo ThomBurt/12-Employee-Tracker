@@ -3,6 +3,10 @@ A command-line application for managing a company's employees using node, inquir
 
 <img src='images\screenshot.PNG' alt="Employee Tracker" width="957" height="510">
 
+# Video Walk-through
+https://drive.google.com/file/d/1A6Jtvi3EzKhD3XnGwZRoGDHJgs8MxDVJ/view
+
+
 # USER STORY
 AS A business owner
 I WANT to be able to view and manage the departments, roles, and employees in my company
