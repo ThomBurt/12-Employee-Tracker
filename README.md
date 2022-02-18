@@ -1,7 +1,7 @@
 # Employee Tracker
 A command-line application for managing a company's employees using node, inquirer, and MySQL.
 
-<img src='images\screenshot.PNG' alt="Employee Tracker" width="100" height="420">
+<img src='images\screenshot.PNG' alt="Employee Tracker" width="1000" height="420">
 
 # USER STORY
 AS A business owner
