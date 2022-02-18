@@ -354,9 +354,6 @@ function updateEmployeeRole(){
   )
 };
 
-
-
-
 // function viewEmpByManager() {
 //   connection.query(`SELECT first_name, last_name, managers.first_name FROM employees INNER JOIN roles ON role_id = roles.id INNER JOIN departments ON department_id = departments.id ORDER BY employees.manager_id`,
 //   function(err, res) {
@@ -365,8 +362,6 @@ function updateEmployeeRole(){
 //     start();
 //   });
 // };
-
-
 
 function viewEmployeesByDepartment() {
   connection.query(`SELECT first_name, last_name, departments.name FROM employees INNER JOIN roles ON role_id = roles.id INNER JOIN departments ON department_id = departments.id`,
@@ -377,7 +372,6 @@ function viewEmployeesByDepartment() {
   });
 };
 
-// Update an Employee's Manager
 function updateEmployeeManager() {
   let sql =       `SELECT employees.id, employees.first_name, employees.last_name, employees.manager_id
                   FROM employees`;
