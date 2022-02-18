@@ -23,7 +23,7 @@ VALUES
 ('Jake', 'Peralta', 2, 4),
 ('Rosa', 'Diaz', 2, 4),
 ('Amy', 'Santiago', 2, 4),
-('Ray', 'Holt', 1, 1),
+('Ray', 'Holt', 1, NULL),
 ('Gina', 'Linetti', 6, 4),
 ('Charles', 'Boyle', 4, 4),
 ('Terry', 'Jeffords', 5, 4),
@@ -38,4 +38,4 @@ VALUES
 ('Ross', 'Geller', 6, 4),
 ('Joey', 'Tribbiani', 7, 4);
 
-UPDATE `employees_db`.`employees` SET `manager_id` = '1' WHERE (`id` > '1');
+-- UPDATE `employees_db`.`employees` SET `manager_id` = '1' WHERE (`id` > '1');

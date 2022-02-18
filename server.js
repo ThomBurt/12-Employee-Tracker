@@ -71,7 +71,7 @@ function start() {
               break;
     
             case "View employees":
-              viewEmployees();   //✔️
+              viewEmployees();   // TODO - need to update the table to show id, salary, job titles, departments,and managers that the employees report to 
               break;
     
             case "View a role":
@@ -79,15 +79,15 @@ function start() {
               break;
     
             case "View employees by manager":
-              viewEmpByManager();
+              viewEmpByManager();  // TODO 
               break;
     
             case "Update employee roles":
-              updateEmployeeRole();
+              updateEmployeeRole();   //✔️ 
               break;
     
             case "Update employee managers":
-              updateEmployeeManagers();
+              updateEmployeeManagers();  //TODO
               break;
     
             case "Delete department":
@@ -102,12 +102,12 @@ function start() {
               deleteEmployee();   //✔️
               break;
     
-            case "View the total utilized budget of a department":
+            case "View the total utilized budget of a department": //TODO
               companyBudget();
               break;
     
             default:
-              console.log(`Action not accepted: ${answer.action}`);
+              console.log(`Action not accepted: ${answer.action}`);   //✔️
               break;
 
             case "Exit":
@@ -240,7 +240,8 @@ function addEmployee() {
 
     // function to view all employees
 function viewEmployees() {
-      connection.query("SELECT employees.first_name, employees.last_name, roles.title AS \"role\", managers.first_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id",  
+  //    connection.query("SELECT employees.first_name, employees.last_name, roles.title AS \"role\", managers.first_name, managers.last_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id",  
+      connection.query("SELECT employees.first_name, employees.last_name, roles.title AS role, roles.salary, departments.name AS department, managers.first_name AS manager_first_name, managers.last_name  AS manager_last_name FROM employees LEFT JOIN roles on employees.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id LEFT JOIN employees managers ON employees.manager_id = managers.id ORDER BY employees.id",
       function(err, res) {
         if (err) throw err;
         // Logging all of the results of the SELECT statement within a CONSOLE TABLE
@@ -248,6 +249,20 @@ function viewEmployees() {
         start();
       });
 }
+//TODO - employee
+// "SELECT employees.first_name, employees.last_name, employees.manager_id, roles.title, roles.salary, departments.name managers.first_name, managers.last_ name 
+// FROM employees LEFT JOIN roles on employee.role_id = roles.id 
+// FROM roles LEFT JOIN departments on roles.department_id = departments.name 
+// LEFT JOIN employees managers ON employees.manager_id = managers.id ORDER BY employees.id"
+
+// function viewEmployees() {
+//   connection.query("SELECT employees.first_name, employees.last_name, departments.name, roles.salary, employees.manager_id  FROM employees LEFT JOIN roles ON employees.role_id = roles.department_id INNER JOIN departments on roles.department_id = departments.name",
+//   function(err, res) {
+//     if (err) throw err;
+//     console.table(res)
+//     start();
+//   });
+//}
 
     // REMOVE EMPLOYEE FUNCTION
 function deleteEmployee(){
