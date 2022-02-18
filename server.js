@@ -45,7 +45,7 @@ function start() {
             "View a role",
             "Update employee roles",
             "Update employee managers",
-            "View employees by manager",
+            //"View employees by manager",
             "View employees by department",
             "Delete department",
             "Delete role",
