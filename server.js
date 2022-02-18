@@ -2,7 +2,7 @@ const connection = require('./db/connection');
 const consoleTable = require('console.table');
 const inquirer = require ('inquirer'); 
 const figlet = require("figlet");
-
+//const promisemysql = require("promise-mysql");
 
 
 // Start server after DB connection
@@ -45,6 +45,7 @@ function start() {
             "Update employee roles",
             "Update employee managers",
             "View employees by manager",
+            "View employees by department",
             "Delete department",
             "Delete role",
             "Delete employee",
@@ -71,24 +72,28 @@ function start() {
               break;
     
             case "View employees":
-              viewEmployees();   // TODO - need to update the table to show id, salary, job titles, departments,and managers that the employees report to 
+              viewEmployees();   // ✔️
               break;
     
             case "View a role":
               viewRoles();   //✔️
               break;
     
-            case "View employees by manager":
-              viewEmpByManager();  // TODO 
+            // case "View employees by manager":
+            //   viewEmpByManager();  // TODO emp by manager
+            //   break;
+
+            case "View employees by department":
+              viewEmployeesByDepartment(); //✔️
               break;
     
             case "Update employee roles":
               updateEmployeeRole();   //✔️ 
               break;
     
-            case "Update employee managers":
-              updateEmployeeManagers();  //TODO
-              break;
+            // case "Update employee managers":
+            //   updateEmployeeManagers();  //TODO update employee manager
+            //   break;
     
             case "Delete department":
               deleteDepartment();  //✔️
@@ -102,7 +107,7 @@ function start() {
               deleteEmployee();   //✔️
               break;
     
-            case "View the total utilized budget of a department": //TODO
+            case "View the total utilized budget of a department":  //✔️
               companyBudget();
               break;
     
@@ -195,74 +200,91 @@ function deleteDepartment(){
 
 // EMPLOYEE FUNCTIONS
 
-function addEmployee() {
-  console.log("Adding a new employee");
-  managerChoices = connection.query("SELECT managers.first_name, managers.last_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.manager_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id")
-    inquirer 
-      .prompt ([ 
-        {
-          type: "input", 
-          message: "What is the employee's first name?",
-          name: "first_name",
-        },
-        {
-          type: "input", 
-          message: "What is the employee's last name?",
-          name: "last_name"
-        },
-        {
-          type: "list",
-          message: "What is the employee's role?",
-          name: "role_id", 
-          choices: [1,2,3]
-        },
-        {
-          type: "input", 
-          message: "Who is their direct manager?",
-          name: "manager_id",
-          choices: managerChoices
-          // he loaded it with some kind of .map to scan through 
+const addEmployee = () => {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'firstName',
+      message: "What is the employee's first name?",
+      validate: addFirstName => {
+        if (addFirstName) {
+            return true;
+        } else {
+            console.log('Please enter a first name');
+            return false;
         }
-      ])
-      .then (function(res){
-        const query = connection.query(
-          "INSERT INTO employees SET ?", 
-         res,
-          function(err, res) {
-            if (err) throw err;
-            console.log( "Employee added!");
-    
-            start(); 
-          }
-       );    
-  })
+      }
+    },
+    {
+      type: 'input',
+      name: 'lastName',
+      message: "What is the employee's last name?",
+      validate: addLastName => {
+        if (addLastName) {
+            return true;
+        } else {
+            console.log('Please enter a last name');
+            return false;
+        }
+      }
+    }
+  ])
+    .then(answer => {
+    const crit = [answer.firstName, answer.lastName]
+    const roleSql = `SELECT roles.id, roles.title FROM roles`;
+    connection.query(roleSql, (error, data) => {
+      if (error) throw error; 
+      const roles = data.map(({ id, title }) => ({ name: title, value: id }));
+      inquirer.prompt([
+            {
+              type: 'list',
+              name: 'role',
+              message: "What is the employee's role?",
+              choices: roles
+            }
+          ])
+            .then(roleChoice => {
+              const role = roleChoice.role;
+              crit.push(role);
+              const managerSql =  `SELECT * FROM employees`;
+              connection.query(managerSql, (error, data) => {
+                if (error) throw error;
+                const managers = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
+                inquirer.prompt([
+                  {
+                    type: 'list',
+                    name: 'manager',
+                    message: "Who is the employee's manager?",
+                    choices: managers
+                  }
+                ])
+                  .then(managerChoice => {
+                    const manager = managerChoice.manager;
+                    crit.push(manager);
+                    const sql =   `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                                  VALUES (?, ?, ?, ?)`;
+                    connection.query(sql, crit, (error) => {
+                    if (error) throw error;
+                    console.log("Employee has been added!")
+                    start();
+              });
+            });
+          });
+        });
+     });
+  });
 };
 
     // function to view all employees
 function viewEmployees() {
-  //    connection.query("SELECT employees.first_name, employees.last_name, roles.title AS \"role\", managers.first_name, managers.last_name AS \"manager\" FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN employees managers ON employees.manager_id = managers.id GROUP BY employees.id",  
-      connection.query("SELECT employees.first_name, employees.last_name, roles.title AS role, roles.salary, departments.name AS department, managers.first_name AS manager_first_name, managers.last_name  AS manager_last_name FROM employees LEFT JOIN roles on employees.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id LEFT JOIN employees managers ON employees.manager_id = managers.id ORDER BY employees.id",
+      connection.query(`SELECT employees.first_name, employees.last_name, roles.title AS role, roles.salary, departments.name AS department, managers.first_name AS manager_first_name, managers.last_name  AS manager_last_name FROM employees LEFT JOIN roles on employees.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id LEFT JOIN employees managers ON employees.manager_id = managers.id ORDER BY employees.id`,
       function(err, res) {
         if (err) throw err;
         // Logging all of the results of the SELECT statement within a CONSOLE TABLE
         console.table(res);
         start();
       });
-}
-//TODO - employee
-// "SELECT employees.first_name, employees.last_name, employees.manager_id, roles.title, roles.salary, departments.name managers.first_name, managers.last_ name 
-// FROM employees LEFT JOIN roles on employee.role_id = roles.id 
-// FROM roles LEFT JOIN departments on roles.department_id = departments.name 
-// LEFT JOIN employees managers ON employees.manager_id = managers.id ORDER BY employees.id"
-
-// function viewEmployees() {
-//   connection.query("SELECT employees.first_name, employees.last_name, departments.name, roles.salary, employees.manager_id  FROM employees LEFT JOIN roles ON employees.role_id = roles.department_id INNER JOIN departments on roles.department_id = departments.name",
-//   function(err, res) {
-//     if (err) throw err;
-//     console.table(res)
-//     start();
-//   });
-//}
+};
 
     // REMOVE EMPLOYEE FUNCTION
 function deleteEmployee(){
@@ -295,37 +317,97 @@ function deleteEmployee(){
       );
 };
 
-function updateEmployeeRole(){
-  connection.query("SELECT first_name, last_name, id FROM employees",
-  function(err,res){
-    for (let i=0; i <res.length; i++){
-      employees.push(res[i].first_name + " " + res[i].last_name);
-    }
-    let employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}))
-    inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "employeeName",
-        message: "Which employee's role would you like to update?",
-        choices: employees
-      },
-      {
-        type: "input",
-        name: "role",
-        message: "What is your new role?"
-      }
-    ])
-    .then(function(res) {
-      connection.query(`UPDATE employees SET role_id = ${res.role} WHERE id = ${res.employeeName}`,
-      function(err, res) {
-        console.log(res);
-        start()
-        }
-        );
-      })
-  }
-  )
+// function updateEmployeeRole(){
+//   connection.query("SELECT first_name, last_name, id FROM employees",
+//   function(err,res){
+//     let employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}))
+//     for (let i=0; i <res.length; i++){
+//       employees.push(res[i].first_name + " " + res[i].last_name);
+//     }
+//     connection.query("SELECT ")
+//     inquirer
+//     .prompt([
+//       {
+//         type: "list",
+//         name: "employeeName",
+//         message: "Which employee's role would you like to update?",
+//         choices: employees
+//       },
+//       {
+//         type: "list",
+//         name: "role",
+//         message: "What is your new role?",
+//         choices: ""
+//       }
+      
+//     ])
+//     .then(function(res) {
+//       connection.query(`UPDATE employees SET role_id = ${res.role} WHERE id = ${res.employeeName}`,
+//       function(err, res) {
+//         console.log(res);
+//         start()
+//         }
+//         );
+//       })
+//   }
+//   )
+// };
+
+
+// BONUS
+// function updateEmployeeManagers(){
+//   connection.query("SELECT first_name, last_name, id FROM employees",
+//   function(err,res){
+//     let employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}))
+//     for (let i=0; i <res.length; i++){
+//       employees.push(res[i].first_name + " " + res[i].last_name);
+//     }
+//     inquirer
+//     .prompt([
+//       {
+//         type: "list",
+//         name: "employeeName",
+//         message: "Which employee would you like to update?",
+//         choices: employees
+//       },
+//       {
+//         type: "input",
+//         name: "role",
+//         message: "Who is your new manager?",
+//         choices: employees
+//       }
+//     ])
+//     .then(function(res) {
+//       connection.query(`UPDATE employees SET manager_id = ${res.role} WHERE id = ${res.employeeName}`,
+//       function(err, res) {
+//         console.log(res);
+//         start()
+//         }
+//         );
+//       })
+//   }
+//   )
+// };
+
+
+function viewEmpByManager() {
+  connection.query(`SELECT first_name, last_name, manager.first_name FROM employees INNER JOIN roles ON role_id = roles.id INNER JOIN departments ON department_id = departments.id ORDER BY employees.manager_id`,
+  function(err, res) {
+    if (err) throw err;
+    console.table(res);
+    start();
+  });
+};
+
+
+
+function viewEmployeesByDepartment() {
+  connection.query(`SELECT first_name, last_name, departments.name FROM employees INNER JOIN roles ON role_id = roles.id INNER JOIN departments ON department_id = departments.id`,
+  function(err, res) {
+    if (err) throw err;
+    console.table(res);
+    start();
+  });
 };
 
 
@@ -421,4 +503,17 @@ function deleteRole(){
 };
 
 
+
+const companyBudget = () => {
+  const sql =     `SELECT department_id AS id, 
+                  departments.name AS department,
+                  SUM(salary) AS budget
+                  FROM  roles  
+                  INNER JOIN departments ON roles.department_id = departments.id GROUP BY  roles.department_id`;
+  connection.query(sql, (error, response) => {
+    if (error) throw error;
+      console.table(response);
+      start();
+  });
+};
           
