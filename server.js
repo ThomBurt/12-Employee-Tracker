@@ -375,7 +375,19 @@ function viewEmpByManager() {
         //TODO: Find employees based on managerid
       });
   });
+};
+
+
+//============= View All Employees By Departments ==========================//
+function viewEmployeesByDepartment() {
+  connection.query("SELECT employees.first_name, employees.last_name, departments.name AS Department FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id ORDER BY departments.name;", 
+  function(err, res) {
+    if (err) throw err
+    console.table(res)
+    start()
+  })
 }
+
 
 // -------------------------------------------------------------------------------------------------------------------------
 
