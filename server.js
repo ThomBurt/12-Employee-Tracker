@@ -232,7 +232,7 @@ function addEmployee() {
     }
   ])
     .then(answer => {
-    const crit = [answer.firstName, answer.lastName]
+    const employeeData = [answer.firstName, answer.lastName]
     const roleSql = `SELECT roles.id, roles.title FROM roles`;
     connection.query(roleSql, (error, data) => {
       if (error) throw error; 
@@ -247,7 +247,7 @@ function addEmployee() {
           ])
             .then(roleChoice => {
               const role = roleChoice.role;
-              crit.push(role);
+              employeeData.push(role);
               const managerSql =  `SELECT * FROM employees`;
               connection.query(managerSql, (error, data) => {
                 if (error) throw error;
@@ -262,10 +262,10 @@ function addEmployee() {
                 ])
                   .then(managerChoice => {
                     const manager = managerChoice.manager;
-                    crit.push(manager);
+                    employeeData.push(manager);
                     const sql =   `INSERT INTO employees (first_name, last_name, role_id, manager_id)
                                   VALUES (?, ?, ?, ?)`;
-                    connection.query(sql, crit, (error) => {
+                    connection.query(sql, employeeData, (error) => {
                     if (error) throw error;
                     console.log("Employee has been added!")
                     start();
