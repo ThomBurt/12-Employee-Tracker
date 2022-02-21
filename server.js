@@ -82,11 +82,11 @@ function start() {
               break;
     
             case "View employees by manager":
-              viewEmpByManager();  // TODO emp by manager
+              viewEmpByManager();  // ✔️
               break;
 
             case "View employees by department":
-              viewEmployeesByDepartment(); //✔️
+              viewEmpByDepartment(); //✔️
               break;
     
             case "Update employee roles":
@@ -377,25 +377,37 @@ function viewEmpByManager() {
           start();
         });
       })
-
-  
-        //TODO: Find employees based on managerid
-
   });
 };
 
-
-
 //============= View All Employees By Departments ==========================//
-function viewEmployeesByDepartment() {
-  connection.query("SELECT employees.first_name, employees.last_name, departments.name AS Department FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id ORDER BY departments.name;", 
-  function(err, res) {
-    if (err) throw err
-    console.table(res)
-    start()
-  })
-}
 
+function viewEmpByDepartment(){
+  db.getAllDepartments().then((rows) => {
+    let departments = rows;
+    console.log(departments);
+    const departmentChoices = departments.map(({ id, department }) => ({
+      name: department,
+      value: id
+    }));
+    inquirer
+    .prompt ([
+      {
+        type: "list",
+        name: "departmentId",
+        message: "which employees do you want to see based on departments?",
+        choices: departmentChoices,
+      }
+    ])
+    .then((res) => {
+      console.log(res.departmentId);
+      db.viewEmployeeByDepartment(res.departmentId).then((results) => {
+        console.table(results);
+        start();
+      });
+    })
+  })
+};
 
 // -------------------------------------------------------------------------------------------------------------------------
 

@@ -61,7 +61,38 @@ class Query {
         resolve(console.table(results));
       });
     });
-  }
-}
+  };
+
+  getAllDepartments(){
+      return new Promise((resolve, reject) => {
+          db.query(`SELECT * FROM departments`,
+          (err, results) => {
+              if (err) {
+                  reject(err);
+              }
+              resolve(results);
+          })
+      });
+  };
+
+  viewEmployeeByDepartment(departmentId){
+    return new Promise((resolve, reject) => {
+      db.query(`SELECT * FROM employees_db.employees AS employees WHERE employees.manager_id = ${departmentId}`, (err, results) => {
+        if (err) {
+          reject(console.log("err ", err));
+        }
+        resolve(console.table(results));
+      });
+    });
+  };
+
+
+
+
+
+
+};
+
+
 
 module.exports = new Query();
