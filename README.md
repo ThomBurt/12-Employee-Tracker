@@ -4,7 +4,7 @@ A command-line application for managing a company's employees using node, inquir
 <img src='images\screenshot.PNG' alt="Employee Tracker" width="957" height="510">
 
 # Video Walk-through
-https://drive.google.com/file/d/1A6Jtvi3EzKhD3XnGwZRoGDHJgs8MxDVJ/view
+https://drive.google.com/file/d/1bKGUCs8aBqLRciD-9MJ2FKRA-Pr1RqM_/view
 
 
 # USER STORY
