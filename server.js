@@ -371,7 +371,7 @@ function viewEmpByManager() {
         },
       ])
       .then((res) => {
-        console.log(res.managerId);
+        console.log(res);
         //TODO: Find employees based on managerid
       });
   });
