@@ -371,11 +371,19 @@ function viewEmpByManager() {
         },
       ])
       .then((res) => {
-        console.log(res);
+        console.log(res.managerId);
+        db.viewEmployeeByManager(res.managerId).then((results) => {
+          console.table(results);
+          start();
+        });
+      })
+
+  
         //TODO: Find employees based on managerid
-      });
+
   });
 };
+
 
 
 //============= View All Employees By Departments ==========================//

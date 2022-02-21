@@ -54,7 +54,7 @@ class Query {
 
   viewEmployeeByManager(managerId) {
     return new Promise((resolve, reject) => {
-      db.query("Write Your Query", (err, results) => {
+      db.query(`SELECT * FROM employees_db.employees AS employees WHERE employees.manager_id = ${managerId}`, (err, results) => {
         if (err) {
           reject(console.log("err ", err));
         }

@@ -15,7 +15,6 @@ CREATE TABLE roles (
   title VARCHAR(30),
   salary DECIMAL(9,2),
   department_id INTEGER,
-  -- INDEX `idx_department_id`(department_id),
   CONSTRAINT `fk_departments_id`
   FOREIGN KEY (department_id)
   REFERENCES departments(id) ON UPDATE CASCADE ON DELETE RESTRICT
@@ -26,16 +25,15 @@ CREATE TABLE employees (
   id INTEGER(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
   first_name VARCHAR(30),
   last_name VARCHAR(30),
+  
   role_id INTEGER NOT NULL,
+  INDEX role_index (role_id),
+  CONSTRAINT fk_role FOREIGN KEY (role_id)  REFERENCES roles(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+   
   manager_id INTEGER,
-  -- INDEX`idx_role`(role_id),
-  CONSTRAINT `fk_role_id`
-  FOREIGN KEY (role_id) 
-  REFERENCES roles(id) ON UPDATE CASCADE ON DELETE RESTRICT,
- -- INDEX `idx_manager`(manager_id), 
-  CONSTRAINT `fk_manager_id`
-  FOREIGN KEY (manager_id)
-  REFERENCES roles(id) ON UPDATE CASCADE ON DELETE RESTRICT
+  INDEX manager_index (manager_id),
+  CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employees(id) ON DELETE SET NULL 
+  
   );
   
 
