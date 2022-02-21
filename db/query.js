@@ -77,7 +77,7 @@ class Query {
 
   viewEmployeeByDepartment(departmentId){
     return new Promise((resolve, reject) => {
-      db.query(`SELECT * FROM employees_db.employees AS employees WHERE employees.manager_id = ${departmentId}`, (err, results) => {
+      db.query(`SELECT * FROM employees AS Employees WHERE employees.role_id = ${departmentId}`, (err, results) => {
         if (err) {
           reject(console.log("err ", err));
         }
@@ -86,6 +86,7 @@ class Query {
     });
   };
 
+  // `SELECT * FROM employees AS Employees WHERE employees.role_id = ${departmentId}`
 
 
 

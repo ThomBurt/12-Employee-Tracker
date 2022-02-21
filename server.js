@@ -366,7 +366,7 @@ function viewEmpByManager() {
         {
           type: "list",
           name: "managerId",
-          message: "which employees do you want to see based on managers?",
+          message: "Which employees do you want to see based on managers?",
           choices: managerChoices,
         },
       ])
@@ -386,8 +386,8 @@ function viewEmpByDepartment(){
   db.getAllDepartments().then((rows) => {
     let departments = rows;
     console.log(departments);
-    const departmentChoices = departments.map(({ id, department }) => ({
-      name: department,
+    const departmentChoices = departments.map(({ id, name }) => ({
+      name: name,
       value: id
     }));
     inquirer
@@ -395,7 +395,7 @@ function viewEmpByDepartment(){
       {
         type: "list",
         name: "departmentId",
-        message: "which employees do you want to see based on departments?",
+        message: "Which employees do you want to see based on departments?",
         choices: departmentChoices,
       }
     ])
